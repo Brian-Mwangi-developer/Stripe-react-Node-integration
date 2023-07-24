@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
 import image from "../assets/background.jpg";
-import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 const HomePage = () => {
     const itemName = "Shopping Background image"
     const itemPrice = 8
     const [quantity, setQuantity] = useState(1);
     const [Amount, setAmount] = useState(itemPrice);
-    const stripePromise = loadStripe(REACT_APP_STRIPE_KEY);//Add publishable Key
     const Checkout = async () => {
         const lineItems = [
             {
@@ -26,8 +24,10 @@ const HomePage = () => {
                 "http://localhost:8000/checkout", { lineItems },
                 { headers: { "Content-Type": "application/json" } }
             );
-            const stripe = await stripePromise;
-            await stripe.redirectToCheckout({ sessionId: data.id });
+            //the stripe api returns a checkout url so check if url exists and redirect to it
+            if(data.url){
+                window.location.href = data.url;
+            }
         } catch (error) {
             console.error("Checkout failed:", error);
         }

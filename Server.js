@@ -14,22 +14,20 @@ const corsOptions ={
 
  //routes
  app.post("/checkout", async (req, res)=>{
-    try{
+  
         const session = await stripe.checkout.sessions.create({
             line_items:req.body.lineItems,
             payment_method_types:["card"],
             mode:"payment",
             success_url:"http://localhost:5173/success",
             cancel_url:"http://localhost:5173/cancel",
-        })
-        return res.status(201).json(session)
-    }catch(error){
-     res.status(500).json(error)
-    }
+        });
+        res.send({url:session.url});
+   
 })
 
  //listen
- PORT=8000;
+ PORT=8000 || process.env.port;
  app.listen(PORT,()=>
     console.log(`Server is Running on Port ${PORT}`)
  )
